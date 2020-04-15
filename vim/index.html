@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>VIM</title>
+  <meta name="description" content="Самые необходимые команды редактора VIM">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://krdprog.ru/vim/">
+  <link rel="alternate" type="application/rss+xml" title="Краснодарский программист" href="http://krdprog.ru/feed.xml">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Краснодарский программист</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/about/">Обо мне и о сайте</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">VIM</h1>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h4 id="vim">Самые необходимые команды редактора VIM</h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">ctrl + c вместо Esc
+
+d3d y3y - строки
+d3w y3w - слова
+d3l y3l - символы
+
+d3l - удалить 3 символа
+y3l - скопировать 3 символа
+
+gd - перейти от места использования переменной к её локальному объявлению
+
+di<span class="s2">" - удалить внутри кавычек
+dit - удалить содержимое внутри тега
+daw - удалить всё слово (независимо от того, в какой части слова стоит курсор)
+
+vim -o 01.txt 02.txt 03.txt - откроет с разделением экрана 3 файла (горизонтально)
+vim -O 01.txt 02.txt 03.txt - откроет с разделением экрана 3 файла (вертикально)
+
+:qall выйти из всех окон
+:wall сохранить во всех окнах
+:wqall сохранить и выйти из всех окон
+:qall! выйти из всех окон несмотря на изменения
+
+:!ls - выполнить команду в оболочке
+
+shift + i - добавить в начале строки
+shift + a - добавить в конце строки
+
+vim +200 text.txt - открыть файл и сразу перейти к строке 200
+
+ctrl + d - перемещение вниз по документу
+ctrl + u - перемещение вверх по документу
+gg - на первую строку
+shift + g - на последнюю строку
+20gg - на строку 20
+
+f&lt;символ&gt; - переместиться на ближайший символ f, - к запятой, fk - к букве k
+
+r&lt;символ&gt; - замена символа под курсором на указанный символ
+shift + R - режим замены (insert-режим)
+
+:set number - включить нумерацию строк
+:set nonumber - отключить нумерацию строк
+
+e - перемещение в конец слова
+b - перемещение в начало слова
+
+^ - переместиться в начало строки
+</span><span class="nv">$ </span><span class="s2">- переместиться в конец строки
+x - удалить символ под курсором
+dw - удалить слово (от курсора до пробела или конца строки)
+dd - удалить текущую строку
+d</span><span class="nv">$ </span><span class="s2">- удалить символы от курсора до конца строки
+J - слить следующую строку с текущей (удалить перевод строки)
+i - начать ввод текста с позиции перед текущим симоволом (insert)
+a - начать ввод текста после текущего симовола (append)
+o - вставить пустую строку после текущей и начать ввод текста
+O - то же, но строка вставляется перед текущей
+. - повторить последнюю команду
+u - отменить последнюю команду
+U - отменить все изменения внесённые в текущую строку
+h - влево, j - вниз, k - наверх, l - вправо
+:qa! - выход без сохранения изменений
+vim file.txt - откроет и создаст файл, если его нет
+Esc - выход из режима ввода в режим команд
+
+/ Enter - поиск слова
+/ Enter - повторный поиск
+? Enter - поиск в обратном направлении
+
+:w - сохранить редактируемый файл
+:w  - записать файл под новым именем 
+:w! - сохранить, игнорируя (по возможности) флаг readonly 
+:wq - сохранить и выйти из vim 
+:q - выйти из vim 
+:q! - выйти из vim без сохранения, сбросив сделанные изменения
+:r  - прочитать содержимое файла name.txt и вставить его в редактируемый текст
+:e  - начать редактирование ещё одного файла
+:ls - показать список редактируемых файлов (активных буферов)
+:b  - перейти к буферу номер 
+:245 - перейти на строку (в примере 245 строка) - или 245gg
+ctrl + ^ - переход между редактируемыми файлами
+
+V - выделение блока из целых строк
+v - выделение блока из произвольного количества символов (границы задаются клавишами: h, j, k, l)
+
+Комментирование:
+шаг 1. визуальный режим: Shift + v - построчное выделение строк
+шаг 2. командный режим: :'&lt;,'&gt;s/^/#/ - комментирование выделенных строк.
+
+d - удалить выделенный блок
+y - скопировать выделенный блок
+(d, y - помещает текст в специальный буфер)
+
+p - вставить содержимое буфера (после курсора)
+P - перед курсором
+
+Все удаляющие команды помещают текст в буфер (x, dd, dw, d</span><span class="nv">$,</span><span class="s2"> и т.п.)
+
+yy - копировать строку
+yw - копировать слово под курсором
+y</span><span class="nv">$ </span><span class="s2">- копировать от курсора до конца строки
+
+:%s/foo/bar/gi - заменить foo на bar (замена текста в файле)
+
+:syntax on - включить подсветку кода
+:syntax off - выключить подсветку кода
+
+:set wrap - перенос строк
+:set nowrap - запретить перенос строк
+
+8 i foo Esc - создаст 8 копий введённого текста (8 - это для примера)
+
+vip - выделить параграф
+viw - выделить слово
+vi( - выделить всё между ближайшими круглыми скобками, аналогично vi"</span> - кавычки, vi<span class="o">{</span>
+va<span class="o">(</span> - выделить всё между ближайшими круглыми скобками, включая сами скобки, аналогично va<span class="s2">" - кавычки, va{
+v2j - выделить на две строки вниз
+
+vit - выделить то, что между тегами
+vat - выделить вместе с тегами, выделится вся конструкция вместе с тегами
+
+dip - вырезать параграф
+di( - вырезать содержимое круглых скобок
+da( - вырезать содержимое круглых скобок и сами скобки
+y2y - скопировать две строки
+yiw - скопировать слово
+vt, - выделить всё до ближайшей запятой (или любого символа, который указать)
+
+5dd - удалить 5 строк (или любое другое число)
+
+"</span>add - вырезать строку в буфер a
+<span class="s2">"ap - вставить из буфера a
+
+5j - переместиться на 5 строк вниз
+
+cw - заменить слово
+c2w - заменить 2 слова
+cl - заменить символ
+c4l - заменить 4 символа
+с</span><span class="nv">$ </span><span class="s2">- заменить всё до конца строки
+
+g~~ - инвертировать регистр (без «g» применяется к символу под курсором)
+
+( - начало предложения
+) - конец предложения
+{ - начало абзаца
+} - конец абзаца
+
+&gt;&gt; - увеличить отступ
+&lt;&lt; - уменьшить отступ
+
+gggqG - заставляет Vim переформатировать весь текст
+
+:sh - открыть терминал (после выхода ctrl+d происходит возврат обратно в редактор)
+
+Макросы:
+qa - начать запись в регистр a
+q - закончить запись
+@a - воспроизвести запись из регистра a
+
+:split (или :sp)
+:vsplit (или :vsp) - ещё одно окно рядом
+ctrl + w ctrl + w - перейти на следующее окно
+
+:split или Ctrl+w s — добавляет в сессию Vim горизонтальное окно
+:vsplit или Ctrl+w v — добавляет в сессию Vim вертикально окно
+:split filename  — добавляет в сессию Vim горизонтальное окно и загружает в него filename
+:vsplit filename  — добавляет в сессию Vim вертикальное окно и загружает в него filename
+Ctrl+w h — переключает на левое окно, относительно текущего
+Ctrl+w l — переключает на правое окно, относительно текущего
+Ctrl+w j — переключает на нижнее окно, относительно текущего
+Ctrl+w k — переключает на верхнее окно, относительно текущего
+Ctrl+w Ctrl+w — переключает на следующее окно
+Ctrl+w r — передвигает окна по часовой стрелке
+Ctrl+w R — передвигает окна против часовой стрелки
+Ctrl+w c — закрывает текущее окно
+
+Открыть файлы во вкладках
+</span><span class="nv">$ </span><span class="s2">vim -p filename1 filename2 filename3
+
+Открыть файл во вкладке
+:tabnew filename
+
+Команда gt переключит на следующую вкладку, а команда gT — на предыдущую.
+
+w - следующее слово
+b - предыдущее слово
+0 - начало строки
+</span><span class="nv">$ </span><span class="s2">- конец строки
+
+H - в верхний левый угол экрана
+M - на первый символ середины экрана
+L - правый нижний угол (последняя строка на экране)
+
+dL - удалить с текущей строки до нижней строки экрана
+dH - удалить с текущей строки до верхней строки экрана</span></code></pre></figure>
+
+<p><strong>Полезно будет ещё пройти vimtutor</strong></p>
+
+<p><strong>Ещё:</strong></p>
+
+<p>http://www.moolenaar.net/habits_ru.html</p>
+
+<p>http://zzapper.co.uk/vimtips.html</p>
+
+<p>https://ru.stackoverflow.com/search?q=vim</p>
+
+<p>http://gnu.su/plugins/forum/forum_viewtopic.php?803.last</p>
+
+<p>http://wiki.solab.rshu.ru/Vim_%D1%83%D1%87%D0%B5%D0%B1%D0%BD%D0%B8%D0%BA</p>
+
+<h4 id="vim-1">Мои плагины Vim</h4>
+
+<p><strong>Поиск плагинов:</strong></p>
+
+<p>https://github.com/vim-scripts/</p>
+
+<p>http://vim-scripts.org/vim/scripts.html</p>
+
+<p>http://vimawesome.com/</p>
+
+<p><strong>Установка менеджера пакетов Vundle ( https://github.com/VundleVim/Vundle.vim ):</strong></p>
+
+<p><code class="highlighter-rouge">git clone https://github.com/VundleVim/Vundle.vim ~/.vim/bundle/vundle</code></p>
+
+<p><strong>Добавить в ~/.vimrc</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+filetype plugin indent on
+</code></pre>
+</div>
+
+<p><strong>Добавить в ~/.vimrc</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Plugin 'scrooloose/nerdtree'
+Plugin 'kien/ctrlp.vim'
+Plugin 'mileszs/ack.vim'
+Plugin 'SirVer/ultisnips'
+Plugin 'scrooloose/syntastic'
+Plugin 'AutoComplPop'
+Plugin 'motemen/git-vim'
+Plugin 'majutsushi/tagbar'
+Plugin 'DfrankUtil'
+Plugin 'vim-scripts/vimprj'
+Plugin 'thinca/vim-template'
+Plugin 'mattesgroeger/vim-bookmarks'
+Plugin 'mattn/emmet-vim'
+Plugin 'freitass/todo.txt-vim'
+Plugin 'rlofc/vorg'
+Plugin 'auxiliary/vim-layout'
+Plugin 'Lokaltog/vim-powerline'
+ 
+Plugin 'tpope/vim-rails'
+Plugin 'vim-ruby/vim-ruby'
+Plugin 'slim-template/vim-slim'
+Plugin 'tpope/vim-bundler'
+Plugin 'thoughtbot/vim-rspec'
+Plugin 'xmisao/rubyjump.vim'
+Plugin 'vim-rubyformat'
+ 
+Plugin 'jvanja/vim-bootstrap4-snippets'
+Plugin 'Chiel92/vim-autoformat'
+</code></pre>
+</div>
+
+<p><strong>Набрать в режиме команд Vim:</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>:source ~/.vimrc
+:PluginInstall
+</code></pre>
+</div>
+
+<p><strong>Как добавить локальный репозиторий:</strong></p>
+
+<p><code class="highlighter-rouge">Bundle '~/my/plugin'</code></p>
+
+<p>Если вы хотите избавиться от плагина, то удалите его из вашего .vimrc (или закомментируйте). Затем команда :BundleClean удалит все плагины, которые не прописаны в .vimrc</p>
+
+<p><strong>По теме:</strong></p>
+
+<p>http://jenyay.net/Programming/VimPlugins2</p>
+
+<p>http://chuwy.me/vim-cheatsheet.html</p>
+
+<h4 id="vim-awesome">Vim Awesome</h4>
+
+<p>https://vimawesome.com/</p>
+
+<h4 id="tutorial-emmet-for-vim">Tutorial Emmet for VIM</h4>
+
+<p>http://vimawesome.com/plugin/emmet-vim</p>
+
+<p>https://raw.githubusercontent.com/mattn/emmet-vim/master/TUTORIAL</p>
+
+<h4 id="vim--molokai">Установить тёмную тему Vim — molokai</h4>
+
+<p><strong>ШАГ 1</strong></p>
+
+<p>Файл https://krdprog.ru/materials/molokai.vim поместить в каталог ~/.vim/colors/</p>
+
+<p><strong>ШАГ 2</strong></p>
+
+<p>В файле ~/.vimrc добавить 2 строки:</p>
+
+<p><code class="highlighter-rouge">set t_Co=256</code></p>
+
+<p><code class="highlighter-rouge">color molokai</code></p>
+
+<p><strong>ШАГ 3</strong></p>
+
+<p>Перезагрузить Vim</p>
+
+<h4 id="vim---vimrc">Настройка редактора vim через файл ~/.vimrc</h4>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>syntax on
+set number
+ 
+set t_Co=256
+color molokai
+ 
+set linebreak
+set showcmd
+set title
+ 
+set ignorecase
+set hlsearch
+set mouse=a
+set laststatus=2
+set completeopt=menu
+ 
+set textwidth=80
+set wrap
+set whichwrap=b,s,&lt;,&gt;,[,],l,h
+ 
+set tabstop=2
+set shiftwidth=2
+set autoindent
+set smartindent
+setlocal cinwords=if,elif,else,for,while,try,except,finally,def,class
+set cursorline
+set encoding=utf-8
+set termencoding=utf-8
+set mps+=&lt;:&gt;
+ 
+for prefix in ['i', 'n', 'v']
+  for key in ['', '', '', '']
+    exe prefix . "noremap " . key . " "
+  endfor
+endfor
+ 
+set statusline=%F%m%r%h%w\ [FORMAT=%{&amp;ff}]\ [POS=%04l,%04v]\ [LEN=%L]
+</code></pre>
+</div>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Краснодарский программист</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>Краснодарский программист</li>
+          <li><a href="mailto:info@krdprog.ru">info@krdprog.ru</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/krdprog"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">krdprog</span></a>
+
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/krdprog"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">krdprog</span></a>
+
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Рабочие рецепты и способы решения возникающих задач + выжимки из учебных материалов.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

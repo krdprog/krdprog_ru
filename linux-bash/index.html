@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Linux и bash-скриптинг</title>
+  <meta name="description" content="Узнать количество ссылок на странице сайта, количество изображений, заголовков и т.п.">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://krdprog.ru/linux-bash/">
+  <link rel="alternate" type="application/rss+xml" title="Краснодарский программист" href="http://krdprog.ru/feed.xml">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Краснодарский программист</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/about/">Обо мне и о сайте</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Linux и bash-скриптинг</h1>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h4 id="section"><strong>Узнать количество ссылок на странице сайта, количество изображений, заголовков и т.п.</strong></h4>
+
+<p>Нам понадобится mojo.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">Узнать количество ссылок на странице:
+mojo get https://foo.ru <span class="s1">'a'</span> | wc -l
+
+Узнать количество изображений на странице:
+mojo get https://foo.ru <span class="s1">'img'</span> | wc -l
+
+Узнать title страницы:
+mojo get https://foo.ru <span class="s1">'title'</span>
+
+Узнать h1 страницы:
+mojo get https://foo.ru <span class="s1">'h1'</span></code></pre></figure>
+
+<h4 id="section-1"><strong>Сделать рандом строк в файле</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">shuf list &gt; list.tmp <span class="o">&amp;&amp;</span> mv list.tmp list</code></pre></figure>
+
+<h4 id="section-2"><strong>Заменить запятые переносом строк</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sed -i ’s/,/<span class="se">\n</span>/g’ list.new <span class="c"># заменить запятые переносом строк</span></code></pre></figure>
+
+<h4 id="linux"><strong>Узнать дату установки системы Linux</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sudo tune2fs -l /dev/sda2 | grep create</code></pre></figure>
+
+<h4 id="md5sum"><strong>Отследить изменения в каталоге средствами md5sum</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    <span class="c"># формируем файл с контрольными суммами</span>
+    md5sum <span class="k">*</span> | sort -u &gt; md5.sum
+     
+    <span class="c"># вносим изменения в каталог</span>
+    touch test.txt
+     
+    <span class="c"># формируем ещё раз файл с контрольными суммами</span>
+    md5sum <span class="k">*</span> | sort -u &gt; md5-2.sum
+     
+    <span class="c"># сравниваем 2 файла с контрольными суммами</span>
+    diff md5.sum md5-2.sum
+     
+    <span class="c"># разницу (если она есть) покажет предыдущая команда</span></code></pre></figure>
+
+<p>Проверить целостность файлов указанных в сгенерированном списке md5.sum</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    md5sum -c md5.sum
+     
+    <span class="c"># если какой-то файл изменён, то будет показано </span>
+    <span class="c"># ЦЕЛ, ПОВРЕЖДЁН. СОВПАЛА или НЕ СОВПАЛА вычисленная контрольная сумма.</span></code></pre></figure>
+
+<h4 id="scp--------"><strong>scp — копирование файлов с локального компьютера на сервер</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    scp -C ~/files/localdir/file.txt ftpuser@hostname:~/sitename/target-dir/
+     
+    -r - рекурсивно
+    -C - использовать сжатие данных</code></pre></figure>
+
+<h4 id="sudoers"><strong>Редактирование файла sudoers</strong></h4>
+
+<p>Узнать права пользователя:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sudo -l</code></pre></figure>
+
+<p><strong>Редактирование файла sudoers — дадим возможность запускать sudo для пользователя petrovich:</strong></p>
+
+<p>Чтобы открыть /etc/sudoers, введите:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sudo visudo</code></pre></figure>
+
+<p>Запишем в файл и сохраним:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">petrovich <span class="nv">ALL</span><span class="o">=(</span>ALL:ALL<span class="o">)</span> ALL</code></pre></figure>
+
+<h4 id="tmux"><strong>tmux</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">терминал tmux https://habrahabr.ru/post/126996/</code></pre></figure>
+
+<h4 id="cron-----------crontab"><strong>Команда cron запускает процесс, выполняющий команды в указанные дни и время — crontab</strong></h4>
+
+<p>Узнать запущен ли cron:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">service cron status</code></pre></figure>
+
+<p>Просмотр задач в crontab:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">crontab -l</code></pre></figure>
+
+<p>Настройка crontab:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">crontab -e</code></pre></figure>
+
+<p>Описание как создавать расписание: http://devacademy.ru/posts/15-otlichnykh-primierov-dlia-sozdaniia-cron-zadach-v-linux/</p>
+
+<p>Можно записать задания из заранее подготовленного файла:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">crontab cron-file.txt</code></pre></figure>
+
+<p><strong>ПРИМЕРЫ РАСПИСАНИЙ corntab:</strong> https://www.shellhacks.com/ru/crontab-format-cron-job-examples-linux/</p>
+
+<p>/var/spool/cron/ — задания для планировщика cron хранятся в данной директории</p>
+
+<p>crontab — http://www.opennet.ru/man.shtml?topic=crontab&amp;category=1
+at — http://www.opennet.ru/man.shtml?topic=at&amp;category=1</p>
+
+<p>Man по-русски: http://www.opennet.ru/man.shtml?topic=cron&amp;category=1&amp;russian=0</p>
+
+<h4 id="pass----"><strong>pass — консольный менеджер паролей</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sudo apt-get install pass</code></pre></figure>
+
+<p>http://rus-linux.net/MyLDP/sec/pass.html
+https://www.passwordstore.org/
+https://linuxcenter.kz/node/2398/blog
+https://losst.ru/luchshie-menedzhery-parolej-dlya-linux</p>
+
+<h4 id="ssl-check-------https"><strong>Проверка SSL-check на смешивание данных. Добиваемся отображения зелёного https</strong></h4>
+
+<p>Если у https сайта на страницах есть данные подгружаемые по http, то зелёного замочка в адресной строке не будет.</p>
+
+<p><strong>Вопрос:</strong> Как обнаружить http контент?</p>
+
+<p><strong>Ответ:</strong> Сервисом https://www.jitbit.com/sslcheck/</p>
+
+<h4 id="bash----"><strong>Bash: приостановить и возобновить процесс</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>bash]
+
+Ctrl + Z - приостановить процесс
+<span class="nb">fg</span> - возобновить процесс</code></pre></figure>
+
+<h4 id="section-3"><strong>Проверьте ваши учётные записи на предмет утечки</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">Сервис для проверки своих учётных записей и e-mail на наличие в базах которые увели.
+
+https://haveibeenpwned.com/
+
+Проверяйте и принимайте меры по смене пароля, его усилению и защите.
+
+Рекомендация сервиса найдена на сайте: https://securelist.ru/</code></pre></figure>
+
+<h4 id="linux------"><strong>Обновить систему Linux, программные пакеты и очистить ненужные зависимости</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sudo apt-get update <span class="o">&amp;&amp;</span> sudo apt-get upgrade <span class="o">&amp;&amp;</span> sudo apt-get autoremove</code></pre></figure>
+
+<h4 id="nix---at"><strong>Планирование задач в *NIX с помощью at</strong></h4>
+
+<p>После запуска at предлагает вам ввести последовательность команд для выполнения. Чтобы закончить ввод команд, следует использовать комбинацию клавиш CTRL-D. Описание основных параметров командной строки at приведено ниже:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    at <span class="o">[</span>-m] <span class="o">[</span>-q очередь] <span class="o">[</span>-f файл] ВРЕМЯ
+     
+    Значение этих параметров:
+     
+    -q используется для указания очереди. Очередь обозначается одной буквой;
+    корректными очередями считаются очереди с идентификаторами от a до z и
+    от A до Z.
+     
+    -m позволяет отправить пользователю сообщение по электронной почте после
+    выполнения задачи даже в том случае, когда выполненная программа
+    ничего не вывела.
+     
+    -f позволяет прочитать команды из файла, а не со стандартного ввода.
+     
+    В качестве времени at принимает строки в форматах, совместимых со
+    стандартом POSIX.2.
+    Принимается строка, указывающая время в формате ЧЧ:ММ, позволяющая выполнить
+    команду в назначенное время в течение дня.
+    Месяц, день, год: ММДДГГ или ММ/ДД/ГГ или ДД.ММ.ГГ.
+    Указание даты должно следовать за указанием времени.</code></pre></figure>
+
+<p>Пример:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    at 20:05
+    <span class="o">[</span>Enter]
+    &gt; touch foo.txt
+    <span class="o">[</span>Ctrl + D]</code></pre></figure>
+
+<p>Посмотреть задания в очереди:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">atq</code></pre></figure>
+
+<p>Удалить задачу (узнав номер задачи через atq:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">atrm 3</code></pre></figure>
+
+<p>Если пользователю не разрешено выполнять команду at, то в файле /etc/at.allow указать имя пользователя, которому дать право на исполнение команды:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">nano /etc/at.allow</code></pre></figure>
+
+<p>http://rus-linux.net/MyLDP/admin/manage-planned-tasks-on-linux-with-the-command-at.html</p>
+
+<h4 id="linux-1"><strong>Вывести в терминал список установленных программ Linux</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">dpkg -l | tail -n+6 | awk <span class="s1">'{print($2)}'</span> | less
+
+или
+
+dpkg --get-selections | less</code></pre></figure>
+
+<h4 id="install-for-me"><strong>install for me</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    sudo apt-get install ranger mc mutt evolution geany nano keepassx imagemagick whois wget ruby
+    sinatra firefox lynx w3m pwgen liferea gimp virtualbox vlc youtube-dl shutter klavaro ktouch
+    libreoffice pindgin gnumeric git htop unetbootin nemo xmlstarlet screen laby freeplane fbreader
+    vim tree at kazam traceroute rake anki pass dia tmux guake git jekyll mojo
+     
+    +PDF-Shuffler + HPLIP + printer-driver + telegram + heroku + google chrome + firefox developer edition + viber + sublime text</code></pre></figure>
+
+<h4 id="exitf---bash"><strong>Удалить EXITF из изображения (bash)</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    Посмотреть данные: <span class="nv">$ </span>exiftool image.jpeg
+    Стереть данные: <span class="nv">$ </span>exiftool -all<span class="o">=</span> image.jpeg
+    Стереть из всех файлов в каталоге: <span class="nv">$ </span>exiftool -all<span class="o">=</span> <span class="k">*</span>
+    Стереть из всех jpg в каталоге: <span class="nv">$ </span>exiftool -all<span class="o">=</span> <span class="k">*</span>.jpg</code></pre></figure>
+
+<h4 id="trisquel--gnulinux-------------------linux"><strong>Trisquel — GNU/Linux дистрибутив с полным использованием в своем составе только свободного ПО без проприетарного ПО и использованием свободной версии ядра Linux</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">Сайт: https://trisquel.info/
+Wikipedia: https://ru.wikipedia.org/wiki/Trisquel
+Ещё: http://www.opennet.ru/opennews/art.shtml?num<span class="o">=</span>40995
+Ещё: http://zenway.ru/page/trisquel</code></pre></figure>
+
+<h4 id="ssh-scp-ssh-keygen----received-disconnect-from-received-disconnect-from-too-many-authentication-failures-for"><strong>SSH, SCP: ssh-keygen: избавляемся от ошибки Received disconnect from Received disconnect from Too many authentication failures for</strong></h4>
+
+<p>Ранее, было описано как настроить доступ к серверу по связке ключей через ssh-keygen.</p>
+
+<p>Вопрос: Почему возникает ошибка Received disconnect from Received disconnect from Too many authentication failures for при подключении к серверу?
+Ответ: В файл конфигурации ~/.ssh добавлено множество ключей и серверу это не нравится, и он блокирует доступ.</p>
+
+<p>Как решить:
+В файле ~/.ssh/config для хостов принудительно указать файлы сертификатов в строке IdentityFile</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    Host mysite
+    IdentityFile ~/.ssh/mysite_key.pub
+    HostName 00.000.00.00
+    User siteadmin</code></pre></figure>
+
+<p>При наличии связки ключей ssh-keygen, чтобы подключиться по ssh не по связке ключей, а по паролю, надо вызывать ssh следующим образом:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">ssh -o <span class="s1">'IdentitiesOnly=yes'</span></code></pre></figure>
+
+<h4 id="xml-----ipv6-----ipv6----xml"><strong>Яндекс.XML не работает с адресами IPv6. Как отключить на хостинге IPv6, чтобы работать с Яндекс.XML</strong></h4>
+
+<p>Если работа приложения связана с Яндекс.XML, а на VPS работает IPv6, то придётся его отключить и включить IPv4.</p>
+
+<p>Инструкция:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    1.Выполните команду
+    <span class="nb">echo </span>net.ipv6.conf.all.disable_ipv6<span class="o">=</span>1 &gt; /etc/sysctl.d/disableipv6.conf
+     
+    2.В файле /etc/hosts закомментируйте все строки, относящиеся к IPv6
+    <span class="c"># The following lines are desirable for IPv6 capable hosts</span>
+    <span class="c">#::1 ip6-localhost ip6-loopback</span>
+    <span class="c">#fe00::0 ip6-localnet</span>
+    <span class="c">#ff00::0 ip6-mcastprefix</span>
+    <span class="c">#ff02::1 ip6-allnodes</span>
+    <span class="c">#ff02::2 ip6-allrouters</span>
+     
+    3. Добавьте или измените строки в /etc/ssh/ssh_config
+    AddressFamily inet
+     
+    4. В /etc/avahi/avahi-daemon.conf 
+    use-ipv6<span class="o">=</span>no
+     
+    5. В /etc/exim4/update-exim4.conf
+    disable_ipv6 <span class="o">=</span> <span class="nb">true
+     
+    </span>6. Перезагрузить и убедиться, что интерфейс не имеет адреса IPv6
+    ifconfig
+    - после перезагрузки не должно быть строки с IPv6 адресом. 
+     
+    7. Проверить нет ли подключений и прослушиваемых портов по IPv6
+    netstat --all | grep -E <span class="s2">"tcp6|udp6"</span></code></pre></figure>
+
+<p>Взято отсюда: http://forum.ispsystem.ru/showthread.php?24588-%D0%9A%D0%B0%D0%BA-%D0%BE%D1%82%D0%BA%D0%BB%D1%8E%D1%87%D0%B8%D1%82%D1%8C-IPv6Б</p>
+
+<p>Опробовано на Debian 7.0 (Wheezy)</p>
+
+<h4 id="nix-debian"><strong>Добавить, блокировать, удалить пользователя в *NIX (Debian)</strong></h4>
+
+<p>С правами root. В примере пользователь krdprog</p>
+
+<p>Добавить нового пользователя. Система запросит пароль (ввести 2 раза):</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">adduser krdprog</code></pre></figure>
+
+<p>Блокировать пользователя:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">passwd --lock krdprog</code></pre></figure>
+
+<p>Удалить пользователя и всю его домашнюю директорию:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">deluser --remove-home krdprog</code></pre></figure>
+
+<p>Сменить пароль пользователя:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">passwd</code></pre></figure>
+
+<h4 id="bash-"><strong>Определение ссылок на странице, их количества и типа через bash-скрипт</strong></h4>
+
+<p>В справочнике по Linux нашёл описание UNIX-утилиты dog, но потом обнаружилось, что её убрали. Пока я её не нашёл, а нашёл замену. Работу средствами консольного браузера lynx.</p>
+
+<p>Итак, напишем скрипт поиска внутренних ссылок на странице сайта (links.on.page.sh):</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    <span class="c">#!/bin/bash</span>
+    <span class="c">#=======================================================================</span>
+    <span class="c"># Скрипт поиска внутренних ссылок на странице сайта</span>
+    <span class="c">#=======================================================================</span>
+    <span class="nv">URL</span><span class="o">=</span><span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> ; <span class="c"># адрес страницы заданный через аргумент к скрипту</span>
+     
+    <span class="c"># уникальные внутренние ссылки:</span>
+    GiveMeListUrlOnPage <span class="o">()</span> <span class="o">{</span>
+    lynx -dump -nonumbers -listonly <span class="nv">$URL</span> | grep <span class="nv">$URL</span> | sort | uniq ;
+    <span class="o">}</span>
+     
+    GiveMeListUrlOnPage ;
+     
+    <span class="nb">exit </span>0</code></pre></figure>
+
+<p>Запускаем скрипт, поиск уникальных внутренних ссылок на странице сайта:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    <span class="nv">$ </span>sh links.on.page.sh krdprog.ru
+     
+    если надо сохранить в файл:
+    <span class="nv">$ </span>sh links.on.page.sh krdprog.ru &gt; url.txt
+     
+    если надо показать количество ссылок, то так:
+    <span class="nv">$ </span>sh links.on.page.sh krdprog.ru | wc -l</code></pre></figure>
+
+<p>Можно определять также скрытые и внешние ссылки. Как использовать? Можно, дописать, например, определитель структуры сайта, или скрипт подготовки sitemap.xml, или в связке со скриптом достающим из ТОП-10 Яндекса адреса сайтов по конкретному ключевому слову, создать анализатор сайтов в ТОП Яндекса по словам (покажет для каждого сайта сколько ссылок на странице), а также разработать анализатор перелинковки сайтов.</p>
+
+<h4 id="ssh-keygen----ssh-------rsa"><strong>ssh-keygen — авторизация по ssh без ввода пароля (по паре ключей RSA)</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    1. Генерация пары ключей:
+    ssh-keygen -b 2048 -t rsa -f ~/.ssh/sitename_key -C <span class="s2">"Key for site"</span>
+     
+    2. Разложим ключи по местам:
+    Публичный ключ sitename_key.pub копируем на удалённый сервер в домашнем каталоге
+    создав каталог ~/.ssh и меняя название файла на authorized_keys
+     
+    <span class="c"># выставим права на удалённом сервере:</span>
+    ~<span class="nv">$ </span>chmod 700 .ssh/
+    ~<span class="nv">$ </span>chmod 600 .ssh/authorized_keys
+     
+    3. Делаем короткую запись доступа к серверу <span class="o">(</span>на локальной машине<span class="o">)</span>:
+    nano ~/.ssh/config
+     
+    Содержимое файла ~/.ssh/config:
+     
+    Host sitename
+    IdentityFile ~/.ssh/sitename_key
+    HostName 11.111.111.11
+    User usernameftp
+     
+    <span class="c"># Тут мы сделали короткую запись, чтобы не вводить ssh usernameftp@11.111.111.11,</span>
+    а набирать просто ssh sitename
+     
+    Пробуем:
+    <span class="nv">$ </span>ssh sitename</code></pre></figure>
+
+<p>Можно для копирования ключа использовать команду ssh-copy-id usrername@servername (попробую и при удачном опыте, допишу заметку).</p>
+
+<h4 id="screen-bash"><strong>screen (bash)</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    screen - запустить скрин
+    screen -S taskmane -t taskname - запустить скрин с именем taskname
+     
+    screen -r taskname - открыть скрин с именем taskname
+    screen -x taskname - подключиться к скрину запущенному в другом терминале
+     
+    Ctrl+a+d - свернуть скрин
+    ctrl+d - выйти из screen
+     
+    screen -list - список активных скринов</code></pre></figure>
+
+<p>Настроим screen. В файле ~/.screenrc надо добавить:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    hardstatus on
+    hardstatus alwayslastline
+    hardstatus string <span class="s2">"%w"</span>
+    <span class="c">#shell /bin/bash</span>
+    startup_message off</code></pre></figure>
+
+<p>Упростим работу, создадим алиасы (в ~/.bashrc):</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    <span class="nb">alias </span><span class="nv">screen1</span><span class="o">=</span><span class="s1">'screen -S 1 -t 1'</span>
+    <span class="nb">alias </span><span class="nv">screen2</span><span class="o">=</span><span class="s1">'screen -S 2 -t 2'</span>
+    <span class="nb">alias </span><span class="nv">screen3</span><span class="o">=</span><span class="s1">'screen -S 3 -t 3'</span>
+    <span class="nb">alias </span><span class="nv">screen4</span><span class="o">=</span><span class="s1">'screen -S 4 -t 4'</span>
+    <span class="nb">alias </span><span class="nv">screen5</span><span class="o">=</span><span class="s1">'screen -S 5 -t 5'</span>
+     
+    <span class="nb">alias </span><span class="nv">screenr1</span><span class="o">=</span><span class="s1">'screen -r 1'</span>
+    <span class="nb">alias </span><span class="nv">screenr2</span><span class="o">=</span><span class="s1">'screen -r 2'</span>
+    <span class="nb">alias </span><span class="nv">screenr3</span><span class="o">=</span><span class="s1">'screen -r 3'</span>
+    <span class="nb">alias </span><span class="nv">screenr4</span><span class="o">=</span><span class="s1">'screen -r 4'</span>
+    <span class="nb">alias </span><span class="nv">screenr5</span><span class="o">=</span><span class="s1">'screen -r 5'</span>
+     
+    Теперь запускать скрины можно по команде screen1
+    Сворачивать по: ctrl+a+d
+    Разворачивать по: screenr1
+    и т.п. для каждого номера</code></pre></figure>
+
+<h4 id="bash"><strong>Сравнение двух файлов. Сохранить в третий уникальные строки (bash)</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">grep -f ./file1 -vFx ./file2 &gt; ./file3</code></pre></figure>
+
+<p>Получим на выходе все строки из файла file2, которых нет в file1. Строки которые есть в file1 не выводятся. Уникальные строки сохраним в ./file3</p>
+
+<h4 id="case-bash"><strong>Наброски скрипта с применением case (bash)</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    <span class="c">#!/bin/bash</span>
+     
+    <span class="c"># обработка фотографий в jpg</span>
+    <span class="k">case</span> <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> <span class="k">in
+         </span>jpg<span class="p">)</span>
+              <span class="nb">echo</span> <span class="s2">"Ок. Это jpg"</span> ;
+              <span class="p">;;</span>
+         jpeg|JPEG|JPG<span class="p">)</span>
+              <span class="nb">echo</span> <span class="s2">"Переименуем в jpg"</span> ;
+              <span class="p">;;</span>
+         png|PNG<span class="p">)</span>
+              <span class="nb">echo</span> <span class="s2">"Конвертируем png в jpg"</span> ;
+              <span class="p">;;</span>
+         gif|GIF<span class="p">)</span>
+              <span class="nb">echo</span> <span class="s2">"Конвертируем gif в jpg"</span> ;
+              <span class="p">;;</span> 
+         <span class="k">*</span><span class="p">)</span>
+              <span class="nb">echo</span> <span class="s2">"Этот тип файла не поддерживается операцией"</span> ; <span class="c"># все другие форматы</span>
+              <span class="p">;;</span>
+    <span class="k">esac</span>
+     
+    <span class="nb">exit </span>0</code></pre></figure>
+
+<h4 id="bash---"><strong>Bash фукция с параметром</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    test_me <span class="o">()</span> <span class="o">{</span>
+    <span class="nb">echo</span> <span class="s2">"Hello </span><span class="nv">$1</span><span class="s2">!"</span>
+    <span class="o">}</span>
+     
+    test_me <span class="s2">"Петрович"</span>;</code></pre></figure>
+
+<h4 id="c---log--bash"><strong>Cоздание каталога для log-файлов (bash)</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    <span class="c">#!/bin/bash</span>
+     
+    <span class="c"># создание каталога для log-файлов  </span>
+    MkdirLog <span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> ! <span class="o">[</span> -d <span class="s2">"./log"</span> <span class="o">]</span> ; <span class="k">then
+            </span>mkdir ./log ; <span class="c"># каталог ./log</span>
+        <span class="k">fi</span> ;
+     
+        <span class="k">if</span> ! <span class="o">[</span> -d <span class="s2">"./log/</span><span class="k">$(</span>date +%F<span class="k">)</span><span class="s2">"</span> <span class="o">]</span> ; <span class="k">then
+            </span>mkdir ./log/<span class="k">$(</span>date +%F<span class="k">)</span> ; <span class="c"># каталог с текущей датой внутри каталога ./log</span>
+        <span class="k">fi</span> ;
+        
+        <span class="nv">LogDir</span><span class="o">=</span><span class="s2">"./log/</span><span class="k">$(</span>date +%F<span class="k">)</span><span class="s2">"</span> ;
+    <span class="o">}</span>
+     
+    MkdirLog ;
+     
+    <span class="nb">exit </span>0</code></pre></figure>
+
+<h4 id="bash-1"><strong>Проверка наличия файла из скрипта bash</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    YesOrNotFileFind <span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> ! <span class="o">[</span> -f <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> <span class="o">]</span> ; <span class="k">then
+            </span><span class="nb">echo</span> <span class="s2">"Файл </span><span class="nv">$1</span><span class="s2"> не найден"</span> ;
+        <span class="k">else
+            </span><span class="nb">echo</span> <span class="s2">"Файл </span><span class="nv">$1</span><span class="s2"> найден"</span> ;
+        <span class="k">fi</span>
+    <span class="o">}</span>
+     
+    <span class="c"># передадим в аргументе функции имя файла для проверки на наличие</span>
+    YesOrNotFileFind <span class="s2">"./list"</span> ;
+    YesOrNotFileFind <span class="s2">"./my.config"</span> ;
+     
+    -e  Файл существует
+    -f  Файл существует и это обычный файл
+    -r  Файл существует и он доступен для чтения
+    -w  Файл существует и он доступен для записи
+    -x  Файл существует и он исполняемый
+    -L  Файл существует и это символьная ссылка
+    -S  Файл существует и это сокет
+    -d  Директория существует</code></pre></figure>
+
+<h4 id="bash-2"><strong>Количество строк в переменную (bash)</strong></h4>
+
+<p>Пример: для файла list</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    <span class="nv">ListSring</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>cat ./list | wc -l<span class="k">)</span><span class="s2">"</span> ;
+     
+    или
+     
+    <span class="nv">ListSring</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>wc -l &lt; ./list<span class="k">)</span><span class="s2">"</span> ;</code></pre></figure>
+
+<h4 id="n-----bash"><strong>Удалить N верхних строк в файле (bash)</strong></h4>
+
+<p>Пример: удалить 10 первых строк из файла:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    sed <span class="s1">'1,10d'</span> test.log &gt; test.tmp.log <span class="o">&amp;&amp;</span> mv test.tmp.log test.log
+     
+    или с переменной
+     
+    <span class="nv">HowManyLines</span><span class="o">=</span>10 ;
+     
+    tail -n <span class="k">$((</span><span class="sb">`</span>wc -l test.log | awk <span class="s1">'{print $1}'</span><span class="sb">`</span><span class="o">-</span><span class="nv">$HowManyLines</span><span class="k">))</span> test.log &gt; test.tmp.log <span class="o">&amp;&amp;</span> mv test.tmp.log test.log</code></pre></figure>
+
+<h4 id="log-----bash"><strong>Просмотр увеличивающегося log-файла в реальном времени (bash)</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">tail -f test.log</code></pre></figure>
+
+<h4 id="devnull-bash"><strong>Очистка содержимого файла через /dev/null (bash)</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">cat /dev/null &gt; test.log</code></pre></figure>
+
+<h4 id="bash-3"><strong>Вывести конкретные строки из файла (bash)</strong></h4>
+
+<p>Вывести с 1 по 6 строку из файла test.txt:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sed -n 1,6p test.txt</code></pre></figure>
+
+<p>Вывести с 4 по 8 строку + строку номер 11 из файла test.txt:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sed -n -e 4,8p -e 11p test.txt</code></pre></figure>
+
+<p>Вывести строку номер 5:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">head -n 5 test.txt | tail -n 1
+или
+sed -n 5p test.txt</code></pre></figure>
+
+<p>ИСКЛЮЧИТЬ ИЗ ВЫВОДА СТРОКИ (пример: исключим 1 и 2 строку из test.txt):</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sed <span class="s1">'1,2d'</span> test.txt</code></pre></figure>
+
+<h4 id="bash-4"><strong>Генерация случайного целого числа в диапазоне чисел (bash)</strong></h4>
+
+<p>Пример: генерация 1 целого числа в диапазоне от 50 до 150</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">shuf -i 50-150 -n 1</code></pre></figure>
+
+<h4 id="curl"><strong>Скрипт проверки битых ссылок. Используем curl</strong></h4>
+
+<p>Напишу на базе curl, скрипт для SEO, который будет проверять битые ссылки на сайте.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">curl -Lw <span class="s1">'%{http_code}'</span> -s -o /dev/null -I krdprog.ru</code></pre></figure>
+
+<p>Выдаёт код 200 — страница существует</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">curl -Lw <span class="s1">'%{http_code}'</span> -s -o /dev/null -I krdprog.ru/dfhagjdsfyhja8</code></pre></figure>
+
+<p>Выдаёт код 404 — страницы нет</p>
+
+<h4 id="bash-5"><strong>Регулярные выражения Bash</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="se">\ </span>- с обратной косой черты начинаются буквенные спецсимволы, а также он используется
+если нужно использовать спецсимвол в виде какого-либо знака препинания;
+^ - указывает на начало строки;
+<span class="gp">$ </span>- указывает на конец строки;
+<span class="k">*</span> - указывает, что предыдущий символ может повторяться 0 или больше раз;
++ - указывает, что предыдущий символ должен повторится больше один или больше раз;
+? - предыдущий символ может встречаться ноль или один раз;
+<span class="o">{</span>n<span class="o">}</span> - указывает сколько раз <span class="o">(</span>n<span class="o">)</span> нужно повторить предыдущий символ;
+<span class="o">{</span>N,n<span class="o">}</span> - предыдущий символ может повторяться от N до n раз;
+. - любой символ кроме перевода строки;
+<span class="o">[</span>az] - любой символ, указанный в скобках;
+х|у - символ x или символ y;
+<span class="o">[</span>^az] - любой символ, кроме тех, что указаны в скобках;
+<span class="o">[</span>a-z] - любой символ из указанного диапазона;
+<span class="o">[</span>^a-z] - любой символ, которого нет в диапазоне;
+<span class="se">\b</span> - обозначает границу слова с пробелом;
+<span class="se">\B</span> - обозначает что символ должен быть внутри слова, например, ux совпадет с uxb
+или tuxedo, но не совпадет с Linux;
+<span class="se">\d</span> - означает, что символ - цифра;
+<span class="se">\D</span> - нецифровой символ;
+<span class="se">\n</span> - символ перевода строки;
+<span class="se">\s</span> - один из символов пробела, пробел, табуляция и так далее;
+<span class="se">\S</span> - любой символ кроме пробела;
+<span class="se">\t</span> - символ табуляции;
+<span class="se">\v</span> - символ вертикальной табуляции;
+<span class="se">\w</span> - любой буквенный символ, включая подчеркивание;
+<span class="se">\W</span> - любой буквенный символ, кроме подчеркивания;
+<span class="se">\u</span>XXX - символ Unicdoe.</code></pre></figure>
+
+<p>Подробнее:
+https://losst.ru/regulyarnye-vyrazheniya-linux
+http://www.bash-scripting.ru/abs/chunks/ch17.html
+http://www.k-max.name/linux/ispolzovanie-regulyarnyx-vyrazhenij-regex-v-linux/
+http://www.opennet.ru/docs/RUS/bash_scripting_guide/c11895.html</p>
+
+<h4 id="bash-6"><strong>Год, месяц, день, час, минуты (bash)</strong></h4>
+
+<p>Запишем в файл с датой и временем:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">echo</span> <span class="s2">"Hello!"</span> &gt; <span class="k">$(</span>date +%Y-%m-%d-%H-%M<span class="k">)</span>.txt</code></pre></figure>
+
+<h4 id="bash--1"><strong>Операции сравнения в bash-скриптах</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">Сравнение целых чисел:
+
+-eq равно
+
+<span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$a</span><span class="s2">"</span> -eq <span class="s2">"</span><span class="nv">$b</span><span class="s2">"</span> <span class="o">]</span>
+
+-ne не равно
+
+<span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$a</span><span class="s2">"</span> -ne <span class="s2">"</span><span class="nv">$b</span><span class="s2">"</span> <span class="o">]</span>
+
+-gt больше
+
+<span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$a</span><span class="s2">"</span> -gt <span class="s2">"</span><span class="nv">$b</span><span class="s2">"</span> <span class="o">]</span>
+
+-ge больше или равно
+
+<span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$a</span><span class="s2">"</span> -ge <span class="s2">"</span><span class="nv">$b</span><span class="s2">"</span> <span class="o">]</span>
+
+-lt меньше
+
+<span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$a</span><span class="s2">"</span> -lt <span class="s2">"</span><span class="nv">$b</span><span class="s2">"</span> <span class="o">]</span>
+
+-le меньше или равно
+
+<span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$a</span><span class="s2">"</span> -le <span class="s2">"</span><span class="nv">$b</span><span class="s2">"</span> <span class="o">]</span>
+
+&lt; меньше <span class="o">(</span>внутри двойных круглых скобок <span class="o">)</span>
+
+<span class="o">((</span><span class="s2">"</span><span class="nv">$a</span><span class="s2">"</span> &lt; <span class="s2">"</span><span class="nv">$b</span><span class="s2">"</span><span class="o">))</span>
+
+&lt;<span class="o">=</span> меньше или равно <span class="o">(</span>внутри двойных круглых скобок<span class="o">)</span>
+
+<span class="o">((</span><span class="s2">"</span><span class="nv">$a</span><span class="s2">"</span> &lt;<span class="o">=</span> <span class="s2">"</span><span class="nv">$b</span><span class="s2">"</span><span class="o">))</span>
+
+знак &gt; больше <span class="o">(</span>внутри двойных круглых скобок<span class="o">)</span>
+
+<span class="o">((</span><span class="s2">"</span><span class="nv">$a</span><span class="s2">"</span> &gt; <span class="s2">"</span><span class="nv">$b</span><span class="s2">"</span><span class="o">))</span>
+
+знак &gt;<span class="o">=</span> больше или равно <span class="o">(</span>внутри двойных круглых скобок<span class="o">)</span>
+
+<span class="o">((</span><span class="s2">"</span><span class="nv">$a</span><span class="s2">"</span> &gt;<span class="o">=</span> <span class="s2">"</span><span class="nv">$b</span><span class="s2">"</span><span class="o">))</span></code></pre></figure>
+
+<h4 id="linux-format"><strong>Архив журнала Linux Format</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">http://www.linuxformat.ru/archive</code></pre></figure>
+
+<h4 id="csv--xls----ssconvert"><strong>Конвертация файлов .csv в .xls и не только (ssconvert)</strong></h4>
+
+<p>Конвертация одиночного файла:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    ssconvert file.csv file.xls
+     
+    или
+     
+    ssconvert -T Gnumeric_Excel:excel_biff8 file.csv</code></pre></figure>
+
+<p>Узнать в какие форматы можно конвертировать:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">ssconvert --list-exporters</code></pre></figure>
+
+<p>Если надо сконвертировать .csv в .html</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">ssconvert -T Gnumeric_html:xhtml file.csv</code></pre></figure>
+
+<p>Если надо сконвертировать .csv в .pdf</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">ssconvert -T Gnumeric_pdf:pdf_assistant file.csv</code></pre></figure>
+
+<p>Можно конвертировать из любого доступного формата в любой (доступный для конвертации данной утилитой):</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    ID                                | Description
+    Gnumeric_lpsolve:lpsolve          | Решатель линейных программ LPSolve
+    Gnumeric_sylk:sylk                | MultiPlan <span class="o">(</span>SYLK<span class="o">)</span>
+    Gnumeric_html:roff                | TROFF <span class="o">(</span><span class="k">*</span>.me<span class="o">)</span>
+    Gnumeric_html:latex_table_visible | LaTeX 2e <span class="o">(</span><span class="k">*</span>.tex<span class="o">)</span> table fragment of visible rows
+    Gnumeric_html:latex_table         | LaTeX 2e <span class="o">(</span><span class="k">*</span>.tex<span class="o">)</span> фрагмент таблицы
+    Gnumeric_html:latex               | LaTeX 2e <span class="o">(</span><span class="k">*</span>.tex<span class="o">)</span>
+    Gnumeric_html:xhtml_range         | Блок XHTML для экспорта в буфер обмена
+    Gnumeric_html:xhtml               | XHTML <span class="o">(</span><span class="k">*</span>.html<span class="o">)</span>
+    Gnumeric_html:html40frag          | Фрагмент HTML <span class="o">(</span><span class="k">*</span>.html<span class="o">)</span>
+    Gnumeric_html:html40              | HTML 4.0 <span class="o">(</span><span class="k">*</span>.html<span class="o">)</span>
+    Gnumeric_html:html32              | HTML 3.2 <span class="o">(</span><span class="k">*</span>.html<span class="o">)</span>
+    Gnumeric_Excel:xlsx2              | ISO/IEC 29500:2008 &amp; ECMA 376 2ое издание <span class="o">(</span>2008<span class="o">)</span>; <span class="o">[</span>MS Excel™ 2010]
+    Gnumeric_Excel:xlsx               | ECMA 376 1ое издание <span class="o">(</span>2006<span class="o">)</span>; <span class="o">[</span>MS Excel™ 2007]
+    Gnumeric_Excel:excel_dsf          | MS Excel™ 97/2000/XP &amp; 5.0/95
+    Gnumeric_Excel:excel_biff7        | MS Excel™ 5.0/95
+    Gnumeric_Excel:excel_biff8        | MS Excel™ 97/2000/XP
+    Gnumeric_dif:dif                  | Формат обмена данными <span class="o">(</span><span class="k">*</span>.dif<span class="o">)</span>
+    Gnumeric_glpk:glpk                | Решатель линейных программ GLPK
+    Gnumeric_OpenCalc:odf             | ODF 1.2 extended conformance <span class="o">(</span><span class="k">*</span>.ods<span class="o">)</span>
+    Gnumeric_OpenCalc:openoffice      | ODF 1.2 strict conformance <span class="o">(</span><span class="k">*</span>.ods<span class="o">)</span>
+    Gnumeric_stf:stf_csv              | Значения разделённые запятыми <span class="o">(</span>CSV<span class="o">)</span>
+    Gnumeric_stf:stf_assistant        | Текст <span class="o">(</span>настраиваемый<span class="o">)</span>
+    Gnumeric_XmlIO:sax:0              | Gnumeric XML несжатый <span class="o">(</span><span class="k">*</span>.xml<span class="o">)</span>
+    Gnumeric_XmlIO:sax                | Gnumeric XML <span class="o">(</span><span class="k">*</span>.gnumeric<span class="o">)</span>
+    Gnumeric_pdf:pdf_assistant        | Экспорт в PDF</code></pre></figure>
+
+<p>Установить на linux:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sudo apt install gnumeric</code></pre></figure>
+
+<p><strong>БОНУС:</strong></p>
+
+<p>Конвертировать все файлы в каталоге из .csv в .xls и .csv в .html и разложить по каталогам xls и html:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    mkdir xls html ;
+     
+    find <span class="k">*</span> -maxdepth 0 -type f -print0 | xargs -0 -n 1 ssconvert -T Gnumeric_Excel:excel_biff8 <span class="o">&amp;&amp;</span> find <span class="k">*</span>.xls -print0 |
+    xargs -0 -i mv <span class="o">{}</span> xls/ ;
+     
+    find <span class="k">*</span> -maxdepth 0 -type f -print0 | xargs -0 -n 1 ssconvert -T Gnumeric_html:html40 <span class="o">&amp;&amp;</span> find <span class="k">*</span>.html -print0 |
+    xargs -0 -i mv <span class="o">{}</span> html/ ;</code></pre></figure>
+
+<h4 id="bash-7"><strong>Действия с файлами в каталоге (bash)</strong></h4>
+
+<p>Найти все файлы ТОЛЬКО в данном каталоге (без учёта вложенных каталогов), и выполнить действие.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    find <span class="k">*</span> -maxdepth 0 -type f -print0 | xargs -0 -n 1 -i mv <span class="o">{}</span> foo/
+    <span class="c"># в качестве примера: перенесёт все файлы в каталог foo</span></code></pre></figure>
+
+<h4 id="bash-8"><strong>Узнать сколько строк в каждом файле и записать результат в файл (bash)</strong></h4>
+
+<p>Пригодится для написания seo-скриптов (работы с семантическим ядром и т. п.)</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">find <span class="k">*</span> -maxdepth 0 -type f -print0 | xargs -0 wc -l &gt;&gt; how-many-words.txt</code></pre></figure>
+
+<h4 id="bash-9"><strong>Вынести конфигурацию за пределы скрипта (bash)</strong></h4>
+
+<p>Можно вынести переменные конфигурации в отдельный файл и затем подгрузить их в скрипт.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    Вставить в скрипт:
+    . ./имя_файла
+     
+    Пример:
+    . ./yandex.config</code></pre></figure>
+
+<h4 id="section-4"><strong>Консольные файловые менеджеры</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">mc
+ranger</code></pre></figure>
+
+<h4 id="n--bash"><strong>Повторить команду N раз (bash)</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="k">for </span>i <span class="k">in</span> <span class="o">{</span>1..30<span class="o">}</span> ; <span class="k">do </span><span class="nb">echo</span> <span class="s2">"Hi!"</span> ; <span class="k">done</span></code></pre></figure>
+
+<h4 id="section-5"><strong>Добавить символы в начале и в конце каждой строки</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    <span class="c"># добавить символы в начале каждой строки используя AWK</span>
+    awk <span class="s1">'{print "текст"$0}'</span> file
+    <span class="c"># добавить символы в начале каждой строки используя SED</span>
+    sed <span class="s1">'s/^/текст/'</span> file
+     
+    <span class="c"># добавить символы в конце каждой строки используя AWK</span>
+    awk <span class="s1">'{print $0"текст"}'</span> file
+    <span class="c"># добавить символы в конце каждой строки используя SED</span>
+    sed <span class="s1">'s/$/текст/'</span> file
+     
+    <span class="c"># добавить символы в начале и в конце каждой строки используя AWK</span>
+    awk <span class="s1">'{print "в_начале"$0"в_конце"}'</span> file
+    <span class="c"># добавить символы в начале и в конце каждой строки используя SED</span>
+    sed <span class="s2">"s/.*/в_начале&amp;в_конце/"</span> file</code></pre></figure>
+
+<h4 id="sed------"><strong>sed: убрать пустые строки и строки комментариев</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sed -e <span class="s1">'/^$/d'</span> -e <span class="s1">'/^#/d'</span> ttt.txt</code></pre></figure>
+
+<h4 id="section-6"><strong>Найти текст в файлах во всех вложенных каталогах</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">grep -r <span class="s2">"искомый текст"</span> ~/work</code></pre></figure>
+
+<h4 id="sort--uniq"><strong>sort | uniq</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sort | uniq</code></pre></figure>
+
+<p>uniq убирает дубли только если они идут подряд, а не в разброс. Чтобы этого добиться, нужно использовать sort.</p>
+
+<h4 id="section-7"><strong>Получить значение: количество строк</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">wc -l</code></pre></figure>
+
+<h4 id="less-"><strong>Краткое руководство по less (пейджер)</strong></h4>
+
+<h4 id="s"><strong>s</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">less file.txt <span class="c"># программа пейджер (просмотр длинных файлов)</span></code></pre></figure>
+
+<p>q - выход
+f - пролистать на страницу вперёд
+b - пролистать на страницу назад
+g - вверх документа
+G - вниз документа
+j - вниз на строку
+k - вверх на строку
+h - вызвать справку</p>
+
+<p>/искомоеслово - поиск слова
+n - далее по поиску
+shift + n - предыдущий результат</p>
+
+<h4 id="xargs---"><strong>Как указать xargs куда подставлять данные</strong></h4>
+
+<p>Команда xargs — по умолчанию вставляет в качестве аргумента в конец передаваемой команде.</p>
+
+<p>Если при конструировании второй команды надо явно указать место, куда должны попасть выходные данные первой, достаточно воспользоваться парой фигурных скобок, {} и параметром -i для замены аргумента в нужном месте.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">&lt;команда 1&gt; | xargs -i &lt;команда 2&gt; <span class="o">{}</span> &lt;команда 2-2&gt;</code></pre></figure>
+
+<h4 id="bash-10"><strong>Создать файл во всех вложенных каталогах (bash)</strong></h4>
+
+<p>Имея вложенные каталоги dir01, dir02, … dir500, надо создать в них файл zz.txt</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="k">for </span>i <span class="k">in </span>dir<span class="k">*</span> ; <span class="k">do </span>touch <span class="nv">$i</span>/zz.txt ; <span class="k">done</span></code></pre></figure>
+
+<h4 id="bash-11"><strong>Генератор пароля (bash)</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">tr -dc A-Za-z0-9_ &lt; /dev/urandom | head -c 30 | xargs</code></pre></figure>
+
+<p>Или используйте pwgen</p>
+
+<p>сложный пароль:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    pwgen -1sBnc 40 1
+     
+    получится примерно так: 4mdM3dAzNNhqhHxxvpeTVpkioWMNFTxERTvRLLHj</code></pre></figure>
+
+<p>или ещё сложнее пароль:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    pwgen -1sBny 40 1
+     
+    получится примерно так: ~p<span class="sb">`</span>T&amp;n[?V<span class="sb">`</span>f<span class="se">\H</span>rK#-,g.[<span class="o">=</span><span class="nv">$.</span>|H<span class="o">)</span>?<span class="s1">'po9+[-]wy,v</span></code></pre></figure>
+
+<p>установить pwgen:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">sudo apt-get install pwgen</code></pre></figure>
+
+<h4 id="sed"><strong>sed</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">8d - удалить 8-ую строку
+/^<span class="nv">$/</span>d - удалить все пустые строки
+1,/^<span class="nv">$/</span>d - удалить все строки до первой пустой строки, включительно
+/Foo/d - вывести строки, содержащие <span class="s1">'Foo'</span> <span class="o">(</span>с ключом -n<span class="o">)</span>
+s/Foo/Bar/ - в каждой стоке заменить первое встретившееся слово Foo на слово Bar
+s/Foo/Bar/g - в каждой стоке заменить все встретившиеся слова Foo на Bar
+s/ <span class="k">*</span><span class="nv">$/</span>/ - удалить все пробелы в конце каждой строки
+s/00<span class="k">*</span>/0/g - заменить все последовательности нулей одним символом 0
+/Foo/d - удалить все строки со словом Foo
+s/Foo//g - удалить все найденные Foo, оставляя остальную чать строки без изменений</code></pre></figure>
+
+<h4 id="unix"><strong>Знакомство с текстовыми утилитами UNIX</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">Использование стандартных утилит операционной системы для работы с текстом
+
+Оставлю тут ссылку на крайне полезную статью: https://www.ibm.com/developerworks/ru/library/au-unixtext/index.html</code></pre></figure>
+
+<h4 id="csv-"><strong>Нумерация строк через точку с запятой (для формирования .csv файла)</strong></h4>
+
+<p>Если нам нужен номер строки для дальнейшего использования этих данных в csv файле, то поможет команда nl</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">nl -s<span class="s1">';'</span></code></pre></figure>
+
+<h4 id="man--"><strong>man (по-русски)</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">Мануалы команд GNU/Linux переведённые на русский язык.
+Тут: http://www.opennet.ru/man_1.shtml</code></pre></figure>
+
+<h4 id="man-wget--"><strong>man wget (по-русски)</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">Тут: http://www.opennet.ru/man.shtml?topic<span class="o">=</span>wget</code></pre></figure>
+
+<h4 id="m4a--mp3"><strong>Конвертация аудиофайла m4a в mp3</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">ffmpeg -i input.m4a -acodec libmp3lame -ab 128k output.mp3</code></pre></figure>
+
+<h4 id="section-8"><strong>Скобки {} и []</strong></h4>
+
+<p>Создать 30 файлов типа file01.txt — используется конструкция {01..30}</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">touch file<span class="o">{</span>01..30<span class="o">}</span>.txt</code></pre></figure>
+
+<p>Найти с 04 по 08 файлы — используется конструкция [4-8]</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">find file0[4-8].txt</code></pre></figure>
+
+<h4 id="grep----"><strong>grep (поиск) по нескольким словам</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">grep -e <span class="s2">"word1"</span> -e <span class="s2">"word2"</span></code></pre></figure>
+
+<h4 id="section-9"><strong>Работа с файлами в нескольких каталогах</strong></h4>
+
+<p>Скопировать файл zz.txt во все вложенные каталоги:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    find <span class="k">*</span> -type d | xargs -n 1 cp zz.txt
+     
+    или можно так :
+     
+    <span class="k">for </span>i <span class="k">in</span> <span class="k">$(</span>find <span class="k">*</span> -type d<span class="k">)</span> ; <span class="k">do </span>cp zz.txt <span class="nv">$i</span> ; <span class="k">done</span></code></pre></figure>
+
+<p>Удалить файл zz.txt во всех вложенных каталогах:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">    find <span class="k">*</span> -name zz.txt | xargs rm
+    <span class="c"># ОСТОРОЖНО! Удаляет файл и в текущем каталоге тоже.</span></code></pre></figure>
+
+<h4 id="section-10"><strong>Узнать время работы скрипта</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">time </span>script.sh</code></pre></figure>
+
+<h4 id="bash-12"><strong>Вывести дату bash</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">date +%F</code></pre></figure>
+
+<h4 id="foo--bar----"><strong>Заменить foo на bar во всех файлах каталога</strong></h4>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">find -type f -print0 | xargs -0 sed -i <span class="s1">'s/foo/bar/g'</span></code></pre></figure>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Краснодарский программист</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>Краснодарский программист</li>
+          <li><a href="mailto:info@krdprog.ru">info@krdprog.ru</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/krdprog"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">krdprog</span></a>
+
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/krdprog"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">krdprog</span></a>
+
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Рабочие рецепты и способы решения возникающих задач + выжимки из учебных материалов.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
